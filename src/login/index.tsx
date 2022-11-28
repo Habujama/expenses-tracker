@@ -15,14 +15,14 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 interface State {
-  login: string;
+  username: string;
   password: string;
   showPassword: boolean;
 }
 
 function Login() {
   const [values, setValues] = useState<State>({
-    login: "",
+    username: "",
     password: "",
     showPassword: false,
   });
@@ -55,12 +55,13 @@ function Login() {
         <p className="pb-10">Log in to track your expenses!</p>
         <div className="flex flex-col space-y-6">
           <FormControl>
-            <InputLabel htmlFor="outlined-login">Login</InputLabel>
+            <InputLabel htmlFor="outlined-username">Username</InputLabel>
             <OutlinedInput
-              id="login"
+              id="username"
               type="text"
-              label="Your login"
-              onChange={handleChange("login")}
+              label="Your username"
+              name="username"
+              onChange={handleChange("username")}
             />
           </FormControl>
           <FormControl>

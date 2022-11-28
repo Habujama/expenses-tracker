@@ -1,25 +1,17 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 
-import Login from "./login";
-import Expenses from "./expenses";
+import App from "./App";
+
+function ExpensesTrackerApp() {
+  return <App />;
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
-root.render(
-  <React.StrictMode>
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/expenses" element={<Expenses />} />
-      </Routes>
-    </Router>
-  </React.StrictMode>
-);
+root.render(<ExpensesTrackerApp />);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

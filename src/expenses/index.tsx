@@ -11,10 +11,36 @@ import {
 
 import Navbar from "../navbar";
 import Table from "./table";
+import { Data } from "./table-types";
+
+function createData(
+  amount: number,
+  description: string,
+  expense: boolean
+): Data {
+  return {
+    amount,
+    description,
+    expense,
+  };
+}
 
 const Expenses = () => {
   const [isExpense, setIsExpense] = useState("Expense");
-  console.log(isExpense);
+
+  const rows = [
+    createData(100, "Mango", true),
+    createData(50, "Banana", false),
+  ];
+
+  const handleAddExpense = async () => {
+    const parsedData = JSON.parse(localStorage.getItem("rows") || "");
+    await parsedData.unshift(createData(1, "Orange", false));
+
+    localStorage.setItem("rows", JSON.stringify(parsedData));
+
+    console.log(JSON.stringify(rows));
+  };
 
   const handleChange = (event: SelectChangeEvent) => {
     setIsExpense(event.target.value);
@@ -53,13 +79,7 @@ const Expenses = () => {
             </Select>
           </FormControl>
           <FormControl>
-            <Button
-              onClick={() => {
-                console.log("add expenses");
-              }}
-            >
-              Add expenses
-            </Button>
+            <Button onClick={() => handleAddExpense()}>Add expenses</Button>
           </FormControl>
         </div>
         <Table />

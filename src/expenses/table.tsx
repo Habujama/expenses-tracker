@@ -15,20 +15,6 @@ import EnhancedTableHead from "./table-head";
 import EnhancedTableToolbar from "./table-tooolbar";
 import { Data } from "./table-types";
 
-function createData(
-  amount: number,
-  description: string,
-  expense: boolean
-): Data {
-  return {
-    amount,
-    description,
-    expense,
-  };
-}
-
-const rows = [createData(100, "Mango", true), createData(50, "Banana", false)];
-
 export default function EnhancedTable() {
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [page, setPage] = useState(0);
@@ -66,8 +52,12 @@ export default function EnhancedTable() {
 
   const isSelected = (amount: number) => selected.indexOf(amount) !== -1;
 
+  const rowsFromLocalStorage = localStorage.getItem("rows");
+
+  const rows = rowsFromLocalStorage && JSON.parse(rowsFromLocalStorage);
+
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    rows && page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -83,7 +73,7 @@ export default function EnhancedTable() {
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
+                .map((row: Data, index: number) => {
                   const isItemSelected = isSelected(row.amount);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
