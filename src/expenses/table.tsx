@@ -1,4 +1,5 @@
 import { useState, MouseEvent, ChangeEvent } from "react";
+import { v4 } from "uuid";
 
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -18,7 +19,7 @@ import { Data } from "./table-types";
 export default function EnhancedTable() {
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(2);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleClick = (event: MouseEvent<unknown>, amount: number) => {
     const selectedIndex = selected.indexOf(amount);
@@ -54,7 +55,7 @@ export default function EnhancedTable() {
 
   const rowsFromLocalStorage = localStorage.getItem("rows");
 
-  const rows = rowsFromLocalStorage && JSON.parse(rowsFromLocalStorage);
+  const rows = rowsFromLocalStorage ? JSON.parse(rowsFromLocalStorage) : null;
 
   const emptyRows =
     rows && page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -71,48 +72,49 @@ export default function EnhancedTable() {
           >
             <EnhancedTableHead />
             <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row: Data, index: number) => {
-                  const isItemSelected = isSelected(row.amount);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+              {rows ? (
+                rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row: Data, index: number) => {
+                    const isItemSelected = isSelected(row.amount);
+                    const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.amount)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.description}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            "aria-labelledby": labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="normal"
-                        align="left"
+                    return (
+                      <TableRow
+                        hover
+                        onClick={(event) => handleClick(event, row.amount)}
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={v4()}
+                        selected={isItemSelected}
                       >
-                        {row.description}
-                      </TableCell>
-                      <TableCell align="right">{row.amount}</TableCell>
-                      <TableCell align="right">
-                        {row.expense === true ? "expense" : "revenue"}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
+                        <TableCell padding="checkbox">
+                          <Checkbox
+                            color="primary"
+                            checked={isItemSelected}
+                            inputProps={{
+                              "aria-labelledby": labelId,
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell
+                          component="th"
+                          id={labelId}
+                          scope="row"
+                          padding="normal"
+                          align="left"
+                        >
+                          {row.description}
+                        </TableCell>
+                        <TableCell align="right">{row.amount}</TableCell>
+                        <TableCell align="right">
+                          {row.expense === true ? "expense" : "revenue"}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+              ) : (
                 <TableRow
                   style={{
                     height: 53 * emptyRows,
@@ -127,7 +129,7 @@ export default function EnhancedTable() {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={rows?.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

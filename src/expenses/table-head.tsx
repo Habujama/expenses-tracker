@@ -1,4 +1,5 @@
 import "../App.css";
+import { v4 } from "uuid";
 
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
@@ -42,7 +43,7 @@ function EnhancedTableHead() {
         <TableCell />
         {headCells.map((headCell) => (
           <TableCell
-            key={headCell.id}
+            key={v4()}
             align={headCell.id === "description" ? "left" : "right"}
             padding="normal"
           >

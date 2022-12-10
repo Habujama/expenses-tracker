@@ -1,6 +1,8 @@
 import "../App.css";
 
 import { useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 import {
   Button,
@@ -14,35 +16,31 @@ import AttachMoneyOutlinedIcon from "@mui/icons-material/AttachMoneyOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-interface State {
-  username: string;
+type LoginFormValues = {
+  email: string;
   password: string;
-  showPassword: boolean;
-}
+};
 
 function Login() {
-  const [values, setValues] = useState<State>({
-    username: "",
-    password: "",
-    showPassword: false,
-  });
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const navigate = useNavigate();
 
-  const handleChange =
-    (prop: keyof State) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      setValues({ ...values, [prop]: event.target.value });
-    };
+  const { register, handleSubmit } = useForm<LoginFormValues>();
 
   const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
+    setShowPassword(!showPassword);
   };
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
+  };
+
+  const onSubmit: SubmitHandler<LoginFormValues> = (data) => {
+    localStorage.setItem("email", data.email);
+    localStorage.setItem("password", data.password);
+    navigate("/expenses", { replace: true });
   };
 
   return (
@@ -53,15 +51,15 @@ function Login() {
           className="transform animate-pulse text-sky-600"
         />
         <p className="pb-10">Log in to track your expenses!</p>
-        <div className="flex flex-col space-y-6">
+        <form method="POST" className="flex flex-col space-y-6">
           <FormControl>
-            <InputLabel htmlFor="outlined-username">Username</InputLabel>
+            <InputLabel htmlFor="outlined-email">email</InputLabel>
             <OutlinedInput
-              id="username"
+              id="email"
               type="text"
-              label="Your username"
-              name="username"
-              onChange={handleChange("username")}
+              label="Your email"
+              autoComplete="email"
+              {...register("email")}
             />
           </FormControl>
           <FormControl>
@@ -70,9 +68,10 @@ function Login() {
             </InputLabel>
             <OutlinedInput
               id="password"
-              type={values.showPassword ? "text" : "password"}
+              type={showPassword ? "text" : "password"}
               label="Your password"
-              onChange={handleChange("password")}
+              autoComplete="password"
+              {...register("password")}
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
@@ -81,22 +80,20 @@ function Login() {
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
-                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               }
             />
           </FormControl>
           <Button
-            href="/expenses"
-            onClick={() => {
-              console.log("login");
-            }}
+            type="submit"
+            onClick={handleSubmit(onSubmit)}
             variant="contained"
           >
             Log me in!
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   );
