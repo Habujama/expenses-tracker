@@ -1,7 +1,12 @@
 export type Order = "asc" | "desc";
 
-export type Data = {
-  amount: number;
+export enum SelectValues {
+  EXPENSE = "Expense",
+  REVENUE = "Revenue",
+}
+
+export type ExpenseFormValues = {
   description: string;
-  expense: boolean;
+  amount: number;
+  select: SelectValues;
 };

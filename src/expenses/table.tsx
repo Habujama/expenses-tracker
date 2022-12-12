@@ -1,4 +1,4 @@
-import { useState, MouseEvent, ChangeEvent } from "react";
+import { useState, useEffect, MouseEvent, ChangeEvent } from "react";
 import { v4 } from "uuid";
 
 import Box from "@mui/material/Box";
@@ -14,12 +14,22 @@ import Checkbox from "@mui/material/Checkbox";
 import "../App.css";
 import EnhancedTableHead from "./table-head";
 import EnhancedTableToolbar from "./table-tooolbar";
-import { Data } from "./table-types";
+import { ExpenseFormValues, SelectValues } from "./table-types";
 
-export default function EnhancedTable() {
+interface EnhancedTableProps {
+  hasUpdated: boolean;
+}
+
+export default function EnhancedTable({ hasUpdated }: EnhancedTableProps) {
   const [selected, setSelected] = useState<readonly number[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  let rowsFromLocalStorage = localStorage.getItem("rows");
+
+  useEffect(() => {
+    rowsFromLocalStorage = localStorage.getItem("rows");
+  }, [hasUpdated]);
 
   const handleClick = (event: MouseEvent<unknown>, amount: number) => {
     const selectedIndex = selected.indexOf(amount);
@@ -42,7 +52,7 @@ export default function EnhancedTable() {
     setSelected(newSelected);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage);
   };
 
@@ -53,18 +63,16 @@ export default function EnhancedTable() {
 
   const isSelected = (amount: number) => selected.indexOf(amount) !== -1;
 
-  const rowsFromLocalStorage = localStorage.getItem("rows");
-
   const rows = rowsFromLocalStorage ? JSON.parse(rowsFromLocalStorage) : null;
 
   const emptyRows =
     rows && page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2 }} className="p-8">
+    <Box className="overflow-x-scroll p-2">
+      <Paper className="w-fit mx-auto p-8">
         <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
+        <TableContainer className="mx-4">
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -75,7 +83,7 @@ export default function EnhancedTable() {
               {rows ? (
                 rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row: Data, index: number) => {
+                  .map((row: ExpenseFormValues, index: number) => {
                     const isItemSelected = isSelected(row.amount);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -88,6 +96,11 @@ export default function EnhancedTable() {
                         tabIndex={-1}
                         key={v4()}
                         selected={isItemSelected}
+                        className={
+                          row.select === SelectValues.EXPENSE
+                            ? "bg-red-100"
+                            : "bg-green-100"
+                        }
                       >
                         <TableCell padding="checkbox">
                           <Checkbox
@@ -109,7 +122,9 @@ export default function EnhancedTable() {
                         </TableCell>
                         <TableCell align="right">{row.amount}</TableCell>
                         <TableCell align="right">
-                          {row.expense === true ? "expense" : "revenue"}
+                          {row.select === SelectValues.EXPENSE
+                            ? SelectValues.EXPENSE
+                            : SelectValues.REVENUE}
                         </TableCell>
                       </TableRow>
                     );
@@ -126,15 +141,17 @@ export default function EnhancedTable() {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows?.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        {rows && (
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        )}
       </Paper>
     </Box>
   );

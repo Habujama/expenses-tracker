@@ -5,11 +5,11 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import { Data } from "./table-types";
+import { ExpenseFormValues } from "./table-types";
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Data;
+  id: keyof ExpenseFormValues;
   label: string;
   numeric: boolean;
 }
@@ -29,7 +29,7 @@ const headCells: readonly HeadCell[] = [
   },
 
   {
-    id: "expense",
+    id: "select",
     numeric: false,
     disablePadding: false,
     label: "Expense/Revenue",
@@ -45,7 +45,6 @@ function EnhancedTableHead() {
           <TableCell
             key={v4()}
             align={headCell.id === "description" ? "left" : "right"}
-            padding="normal"
           >
             {headCell.label}
           </TableCell>

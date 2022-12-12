@@ -50,10 +50,10 @@ function Login() {
           sx={{ fontSize: 250 }}
           className="transform animate-pulse text-sky-600"
         />
-        <p className="pb-10">Log in to track your expenses!</p>
+        <p className="pb-10">Log&nbsp;in to track your expenses!</p>
         <form method="POST" className="flex flex-col space-y-6">
           <FormControl>
-            <InputLabel htmlFor="outlined-email">email</InputLabel>
+            <InputLabel htmlFor="outlined-email">Email</InputLabel>
             <OutlinedInput
               id="email"
               type="text"
