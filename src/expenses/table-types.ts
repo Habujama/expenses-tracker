@@ -9,4 +9,5 @@ export type ExpenseFormValues = {
   description: string;
   amount: number;
   select: SelectValues;
+  id: number;
 };

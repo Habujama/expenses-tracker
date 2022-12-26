@@ -14,12 +14,14 @@ import { ExpenseFormValues, SelectValues } from "./table-types";
 const createData = (
   description: string,
   amount: number,
-  select: SelectValues
+  select: SelectValues,
+  id: number
 ) => {
   return {
     amount,
     description,
     select,
+    id,
   };
 };
 
@@ -38,7 +40,7 @@ const ExpensesForm = ({
     SelectValues.EXPENSE
   );
 
-  const { register, handleSubmit } = useForm<ExpenseFormValues>();
+  const { register, handleSubmit, reset } = useForm<ExpenseFormValues>();
 
   const handleChange = (value: string | SelectValues) => {
     if (value === "Expense") {
@@ -52,14 +54,23 @@ const ExpensesForm = ({
   const onSubmit: SubmitHandler<ExpenseFormValues> = (data) => {
     const dataFromStorage = localStorage.getItem("rows");
 
+    const uniqueId = new Date().getTime();
+
     let localData: ExpenseFormValues[] = dataFromStorage
       ? JSON.parse(dataFromStorage)
       : [];
 
-    const newData = createData(data.description, data.amount, data.select);
+    const newData = createData(
+      data.description,
+      data.amount,
+      data.select,
+      uniqueId
+    );
     localData.unshift(newData);
 
     setHasUpdated(!hasUpdated);
+
+    reset();
 
     return localStorage.setItem("rows", JSON.stringify(localData));
   };

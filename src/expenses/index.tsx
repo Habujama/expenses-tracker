@@ -18,7 +18,7 @@ const Expenses = () => {
           setHasUpdated={setHasUpdated}
           hasUpdated={hasUpdated}
         />
-        <Table hasUpdated={hasUpdated} />
+        <Table hasUpdated={hasUpdated} setHasUpdated={setHasUpdated} />
       </div>
     </div>
   );

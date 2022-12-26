@@ -1,5 +1,4 @@
 import { useState, useEffect, MouseEvent, ChangeEvent } from "react";
-import { v4 } from "uuid";
 
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -17,13 +16,17 @@ import EnhancedTableToolbar from "./table-tooolbar";
 import { ExpenseFormValues, SelectValues } from "./table-types";
 
 interface EnhancedTableProps {
+  setHasUpdated: (hasUpdated: boolean) => void;
   hasUpdated: boolean;
 }
 
-export default function EnhancedTable({ hasUpdated }: EnhancedTableProps) {
+export default function EnhancedTable({
+  setHasUpdated,
+  hasUpdated,
+}: EnhancedTableProps) {
   const [selected, setSelected] = useState<readonly number[]>([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
   let rowsFromLocalStorage = localStorage.getItem("rows");
 
@@ -31,13 +34,12 @@ export default function EnhancedTable({ hasUpdated }: EnhancedTableProps) {
     rowsFromLocalStorage = localStorage.getItem("rows");
   }, [hasUpdated]);
 
-  const handleClick = (event: MouseEvent<unknown>, amount: number) => {
-    const selectedIndex = selected.indexOf(amount);
-    console.log(selectedIndex, "selectedIndex");
+  const handleClick = (event: MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected: readonly number[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, amount);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -61,7 +63,7 @@ export default function EnhancedTable({ hasUpdated }: EnhancedTableProps) {
     setPage(0);
   };
 
-  const isSelected = (amount: number) => selected.indexOf(amount) !== -1;
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   const rows = rowsFromLocalStorage ? JSON.parse(rowsFromLocalStorage) : null;
 
@@ -71,8 +73,13 @@ export default function EnhancedTable({ hasUpdated }: EnhancedTableProps) {
   return (
     <Box className="overflow-x-scroll p-2">
       <Paper className="w-fit mx-auto p-8">
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer className="mx-4">
+        <EnhancedTableToolbar
+          selected={selected}
+          rowsFromLocalStorage={rows}
+          hasUpdated={hasUpdated}
+          setHasUpdated={setHasUpdated}
+        />
+        <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -84,17 +91,17 @@ export default function EnhancedTable({ hasUpdated }: EnhancedTableProps) {
                 rows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row: ExpenseFormValues, index: number) => {
-                    const isItemSelected = isSelected(row.amount);
+                    const isItemSelected = isSelected(row.id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
                       <TableRow
                         hover
-                        onClick={(event) => handleClick(event, row.amount)}
+                        onClick={(event) => handleClick(event, row.id)}
                         role="checkbox"
                         aria-checked={isItemSelected}
                         tabIndex={-1}
-                        key={v4()}
+                        key={row.id}
                         selected={isItemSelected}
                         className={
                           row.select === SelectValues.EXPENSE

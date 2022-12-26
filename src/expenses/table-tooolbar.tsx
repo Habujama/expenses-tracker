@@ -5,13 +5,36 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import { ExpenseFormValues } from "./table-types";
 
 interface EnhancedTableToolbarProps {
-  numSelected: number;
+  selected: readonly number[];
+  rowsFromLocalStorage: ExpenseFormValues[];
+  setHasUpdated: (hasUpdated: boolean) => void;
+  hasUpdated: boolean;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { numSelected } = props;
+  const { selected, rowsFromLocalStorage, setHasUpdated, hasUpdated } = props;
+
+  let numSelected = selected.length;
+
+  const handleDelete = () => {
+    const rows = rowsFromLocalStorage;
+    selected.map((selectedItemId) => {
+      const objWithIdIndex = rows.findIndex((obj) => obj.id === selectedItemId);
+
+      if (objWithIdIndex > -1) {
+        rows.splice(objWithIdIndex, 1);
+      }
+      localStorage.setItem("rows", JSON.stringify(rows));
+
+      setHasUpdated(!hasUpdated);
+      numSelected = 0;
+
+      return rows;
+    });
+  };
 
   return (
     <Toolbar
@@ -48,7 +71,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       )}
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleDelete}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
