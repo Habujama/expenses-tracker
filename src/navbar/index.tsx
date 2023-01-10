@@ -31,7 +31,7 @@ const Navbar = ({ user }: NavbarProps) => {
       ) : (
         <>
           <p className="mr-4 text-sm font-bold">
-            To add data, please log&nbsp;in.
+            Welcome! To see the magic, please log&nbsp;in.
           </p>
           <Button
             variant="contained"
