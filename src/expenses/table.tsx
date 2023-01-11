@@ -1,4 +1,4 @@
-import { useState, useEffect, MouseEvent, ChangeEvent } from "react";
+import { useState, MouseEvent, ChangeEvent } from "react";
 
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -29,10 +29,6 @@ export default function EnhancedTable({
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
   let rowsFromLocalStorage = localStorage.getItem("rows");
-
-  useEffect(() => {
-    rowsFromLocalStorage = localStorage.getItem("rows");
-  }, [hasUpdated]);
 
   const handleClick = (event: MouseEvent<unknown>, id: number) => {
     const selectedIndex = selected.indexOf(id);
@@ -72,7 +68,7 @@ export default function EnhancedTable({
 
   return (
     <Box className="overflow-x-scroll p-2">
-      <Paper className="w-fit mx-auto p-8">
+      <Paper className="w-fit mx-auto p-1 md:p-8">
         <EnhancedTableToolbar
           selected={selected}
           rowsFromLocalStorage={rows}
@@ -106,7 +102,7 @@ export default function EnhancedTable({
                         className={
                           row.select === SelectValues.EXPENSE
                             ? "bg-red-100"
-                            : "bg-green-100"
+                            : "bg-sky-100"
                         }
                       >
                         <TableCell padding="checkbox">

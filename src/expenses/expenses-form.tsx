@@ -78,7 +78,7 @@ const ExpensesForm = ({
   return (
     <form
       method="POST"
-      className="grid grid-cols-1 grid-rows-4 gap-y-4 pr-8 md:flex md:flex-row md:space-x-4  md:items-center my-6 md:my-12"
+      className="grid grid-cols-1 grid-rows-4 gap-y-4 md:flex md:flex-row md:space-x-4  md:items-center justify-center my-6 md:my-12"
     >
       <FormControl>
         <InputLabel htmlFor="description">Description</InputLabel>
