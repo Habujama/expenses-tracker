@@ -20,22 +20,29 @@ const ExpensesChart = ({ hasUpdated }: ExpensesChartProps) => {
   const revenuesOnly = rows.filter(
     (value: ExpenseFormValues) => value.select === "Revenue"
   );
-  const maxRevenueValue = Math.max(
-    ...revenuesOnly.map((value: ExpenseFormValues) => {
-      return value.amount;
-    })
-  );
+  const maxRevenueValue =
+    revenuesOnly.length > 0
+      ? Math.max(
+          ...revenuesOnly.map((value: ExpenseFormValues) => {
+            return value.amount;
+          })
+        )
+      : 10;
+
   const maxValue =
     Math.ceil(maxRevenueValue / 100) * 100 + maxRevenueValue / 10;
 
   const expensesOnly = rows.filter(
     (value: ExpenseFormValues) => value.select === "Expense"
   );
-  const maxExpenseValue = Math.max(
-    ...expensesOnly.map((value: ExpenseFormValues) => {
-      return value.amount;
-    })
-  );
+  const maxExpenseValue =
+    expensesOnly.length > 0
+      ? Math.max(
+          ...expensesOnly.map((value: ExpenseFormValues) => {
+            return value.amount;
+          })
+        )
+      : 10;
   const minValue =
     Math.ceil(maxExpenseValue / 100) * 100 + maxExpenseValue / 10;
 

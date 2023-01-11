@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import { alpha } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -15,8 +17,11 @@ interface EnhancedTableToolbarProps {
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { selected, rowsFromLocalStorage, setHasUpdated, hasUpdated } = props;
+  const [selectedNumber, setSelectedNumber] = useState<number>(0);
 
-  let numSelected = selected.length;
+  useEffect(() => {
+    setSelectedNumber(selected.length);
+  }, [selected.length]);
 
   const handleDelete = () => {
     const rows = rowsFromLocalStorage;
@@ -29,7 +34,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       localStorage.setItem("rows", JSON.stringify(rows));
 
       setHasUpdated(!hasUpdated);
-      numSelected = 0;
+      setSelectedNumber(0);
 
       return rows;
     });
@@ -40,7 +45,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
+        ...(selectedNumber > 0 && {
           bgcolor: (theme) =>
             alpha(
               theme.palette.primary.main,
@@ -49,17 +54,17 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         }),
       }}
     >
-      {numSelected > 0 && (
+      {selectedNumber > 0 && (
         <Typography
           sx={{ flex: "1 1 100%" }}
           color="inherit"
           variant="subtitle1"
           component="div"
         >
-          {numSelected} selected
+          {selectedNumber} selected
         </Typography>
       )}
-      {numSelected > 0 && (
+      {selectedNumber > 0 && (
         <Tooltip title="Delete">
           <IconButton onClick={handleDelete}>
             <DeleteIcon />
