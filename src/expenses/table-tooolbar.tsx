@@ -10,13 +10,20 @@ import { ExpenseFormValues } from "./table-types";
 
 interface EnhancedTableToolbarProps {
   selected: readonly number[];
+  setSelected: (selected: number[]) => void;
   rowsFromLocalStorage: ExpenseFormValues[];
   setHasUpdated: (hasUpdated: boolean) => void;
   hasUpdated: boolean;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { selected, rowsFromLocalStorage, setHasUpdated, hasUpdated } = props;
+  const {
+    selected,
+    setSelected,
+    rowsFromLocalStorage,
+    setHasUpdated,
+    hasUpdated,
+  } = props;
   const [selectedNumber, setSelectedNumber] = useState<number>(0);
 
   useEffect(() => {
@@ -34,6 +41,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
       localStorage.setItem("rows", JSON.stringify(rows));
 
       setHasUpdated(!hasUpdated);
+      setSelected([]);
       setSelectedNumber(0);
 
       return rows;
